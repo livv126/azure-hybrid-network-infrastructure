@@ -1,0 +1,14 @@
+#cloud-config
+runcmd:
+  - setenforce 0
+  - sudo grubby --update-kernel ALL --args selinux=0
+
+  - sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/rocky*.repo
+  - sed -i 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=http://mirror.navercorp.com/rocky|g' /etc/yum.repos.d/rocky*.repo
+
+  - dnf install -y nginx
+
+  - mkdir -p /usr/share/nginx/html
+  - echo "OK" > /usr/share/nginx/html/health.html
+
+  - systemctl enable --now nginx
